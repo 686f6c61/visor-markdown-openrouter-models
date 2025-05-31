@@ -164,7 +164,6 @@
 
 /* Mobile AI Toggle Button */
 .mobile-ai-toggle {
-  display: none;
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -176,17 +175,17 @@
   border-radius: 50%;
   box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
   cursor: pointer;
-  z-index: 1000;
+  z-index: 1001;
   transition: all 0.3s ease;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Show button on mobile and tablet screens */
-@media (max-width: 1200px) {
+/* Hide button on desktop */
+@media (min-width: 1201px) {
   .mobile-ai-toggle {
-    display: flex !important;
-    z-index: 1001;
+    display: none;
   }
 }
 
