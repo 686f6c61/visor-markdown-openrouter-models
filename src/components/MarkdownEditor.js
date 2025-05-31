@@ -53,6 +53,12 @@ const MarkdownEditor = ({ markdown, onChange, onSelectionChange }) => {
     const newValue = e.target.value;
     saveToHistory(markdown);
     onChange(newValue);
+    
+    // Auto-resize textarea
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
   };
 
   const saveToHistory = (content) => {
@@ -82,6 +88,14 @@ const MarkdownEditor = ({ markdown, onChange, onSelectionChange }) => {
       setHistoryIndex(0);
     }
   }, [markdown, history.length]);
+
+  // Auto-resize cuando cambia el contenido desde fuera
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [markdown]);
 
   const handleSelectionChange = () => {
     if (textareaRef.current) {

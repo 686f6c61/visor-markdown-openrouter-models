@@ -449,10 +449,3 @@ copies or substantial portions of the Software.
 [![Twitter](https://img.shields.io/badge/Twitter-Compartir-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/intent/tweet?text=¡Mira%20este%20increíble%20editor%20de%20Markdown%20con%20IA!&url=https://github.com/686f6c61/visor-markdown-openrouter-models)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Compartir-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/sharing/share-offsite/?url=https://github.com/686f6c61/visor-markdown-openrouter-models)
 
-</div>
-
----
-
-<div align="center">
-<sub>Hecho con ❤️ por <a href="https://github.com/686f6c61">686f6c61</a> • Desarrollado con ⚡ React + OpenRouter</sub>
-</div> 

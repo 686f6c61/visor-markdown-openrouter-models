@@ -1,0 +1,51 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#f8fafc;stop-opacity:0.95" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="1100" cy="530" r="80" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="1050" cy="150" r="30" fill="rgba(255,255,255,0.15)"/>
+  
+  <!-- Main Card -->
+  <rect x="100" y="100" width="1000" height="430" rx="20" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Rocket Emoji -->
+  <text x="150" y="220" font-size="80" font-family="Arial, sans-serif">🚀</text>
+  
+  <!-- Title -->
+  <text x="280" y="200" font-size="48" font-weight="bold" fill="#1f2937" font-family="Arial, sans-serif">Visor Markdown</text>
+  <text x="280" y="250" font-size="48" font-weight="bold" fill="#8b5cf6" font-family="Arial, sans-serif">Vitaminado</text>
+  
+  <!-- Subtitle -->
+  <text x="280" y="290" font-size="24" fill="#6b7280" font-family="Arial, sans-serif">Editor con IA Integrada</text>
+  
+  <!-- Features -->
+  <text x="150" y="350" font-size="20" fill="#374151" font-family="Arial, sans-serif">✨ 10 Modelos de IA Gratuitos</text>
+  <text x="150" y="380" font-size="20" fill="#374151" font-family="Arial, sans-serif">📝 Editor en Tiempo Real</text>
+  <text x="150" y="410" font-size="20" fill="#374151" font-family="Arial, sans-serif">🎯 Mejora Selectiva de Texto</text>
+  
+  <text x="500" y="350" font-size="20" fill="#374151" font-family="Arial, sans-serif">👁️ Vista Previa Instantánea</text>
+  <text x="500" y="380" font-size="20" fill="#374151" font-family="Arial, sans-serif">🔄 Historial de Cambios</text>
+  <text x="500" y="410" font-size="20" fill="#374151" font-family="Arial, sans-serif">📋 Copiar y Pegar Avanzado</text>
+  
+  <!-- AI Badge -->
+  <rect x="800" y="320" width="250" height="80" rx="40" fill="#10b981" opacity="0.9"/>
+  <text x="925" y="350" font-size="16" fill="white" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">POWERED BY</text>
+  <text x="925" y="375" font-size="24" fill="white" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold">OpenRouter AI</text>
+  
+  <!-- Bottom Text -->
+  <text x="600" y="580" font-size="18" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="Arial, sans-serif">Hecho con ❤️ por 686f6c61</text>
+</svg> 

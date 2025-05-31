@@ -6,6 +6,7 @@ import AIPanel from './components/AIPanel';
 import Footer from './components/Footer';
 import FloatingGitHub from './components/FloatingGitHub';
 import WelcomeModal from './components/WelcomeModal';
+import ResizablePanel from './components/ResizablePanel';
 import openRouterService from './services/openRouterService';
 import './App.css';
 
@@ -14,7 +15,12 @@ function App() {
   const [selectedText, setSelectedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
-
+  const [tokensConsumed, setTokensConsumed] = useState({
+    totalInput: 0,
+    totalOutput: 0,
+    totalTokens: 0,
+    lastRequest: null
+  });
 
   // Precargar README al iniciar la aplicación
   useEffect(() => {
@@ -84,12 +90,25 @@ function App() {
   const handleImprove = async (prompt, modelId, textToImprove) => {
     setIsLoading(true);
     try {
-      const improvedText = await openRouterService.improveMarkdown(
+      const result = await openRouterService.improveMarkdown(
         markdown,
         prompt,
         modelId,
         textToImprove
       );
+
+      // Manejar tanto el formato nuevo (objeto) como el viejo (string) para compatibilidad
+      const improvedText = typeof result === 'string' ? result : result.improvedText;
+      const tokensUsed = typeof result === 'object' && result.tokensUsed ? result.tokensUsed : null;
+
+      if (tokensUsed) {
+        setTokensConsumed(prev => ({
+          totalInput: prev.totalInput + tokensUsed.input,
+          totalOutput: prev.totalOutput + tokensUsed.output,
+          totalTokens: prev.totalTokens + tokensUsed.total,
+          lastRequest: tokensUsed
+        }));
+      }
 
       if (textToImprove) {
         // Replace selected text with improved version
@@ -120,33 +139,34 @@ function App() {
     setShowWelcomeModal(true);
   };
 
-
-
   return (
     <div className="app">
       <Header onShowHelp={handleShowHelp} />
       
       <main className="main-content">
         <div className="content-grid">
-          <div className="editor-section">
-            <MarkdownEditor
-              markdown={markdown}
-              onChange={handleMarkdownChange}
-              onSelectionChange={handleSelectionChange}
-            />
-          </div>
-          
-          <div className="preview-section">
-            <MarkdownPreview markdown={markdown} />
-          </div>
-          
           <div className="ai-section">
             <AIPanel
               onImprove={handleImprove}
               selectedText={selectedText}
               isLoading={isLoading}
+              tokensConsumed={tokensConsumed}
             />
           </div>
+          
+          <ResizablePanel className="resizable-editor-preview">
+            <div className="editor-section">
+              <MarkdownEditor
+                markdown={markdown}
+                onChange={handleMarkdownChange}
+                onSelectionChange={handleSelectionChange}
+              />
+            </div>
+            
+            <div className="preview-section">
+              <MarkdownPreview markdown={markdown} />
+            </div>
+          </ResizablePanel>
         </div>
       </main>
       

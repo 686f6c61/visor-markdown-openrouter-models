@@ -6,7 +6,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_DEEPSEEK_R1 === 'true',
     description: 'Modelo gratuito de DeepSeek para razonamiento',
-    maxTokens: 65536
+    contextTokens: 128000,
+    maxTokens: 8000
   },
   {
     id: 'qwen/qwen3-30b-a3b:free',
@@ -15,7 +16,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_QWEN3_30B === 'true',
     description: 'Modelo gratuito de Qwen con 30B parámetros',
-    maxTokens: 32768
+    contextTokens: 32768,
+    maxTokens: 8000
   },
   {
     id: 'meta-llama/llama-4-maverick:free',
@@ -24,7 +26,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_LLAMA_4_MAVERICK === 'true',
     description: 'Modelo gratuito de Meta Llama 4',
-    maxTokens: 131072
+    contextTokens: 128000,
+    maxTokens: 8000
   },
   {
     id: 'google/gemma-3n-e4b-it:free',
@@ -33,7 +36,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_GEMMA_3N === 'true',
     description: 'Modelo gratuito de Google Gemma optimizado para instrucciones',
-    maxTokens: 8192
+    contextTokens: 8192,
+    maxTokens: 4000
   },
   {
     id: 'meta-llama/llama-3.3-8b-instruct:free',
@@ -42,7 +46,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_LLAMA_33_8B === 'true',
     description: 'Modelo gratuito Llama 3.3 optimizado para instrucciones',
-    maxTokens: 128000
+    contextTokens: 8192,
+    maxTokens: 4000
   },
   {
     id: 'nousresearch/deephermes-3-mistral-24b-preview:free',
@@ -51,7 +56,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_DEEPHERMES_3 === 'true',
     description: 'Modelo gratuito DeepHermes basado en Mistral',
-    maxTokens: 32768
+    contextTokens: 32768,
+    maxTokens: 8000
   },
   {
     id: 'microsoft/phi-4-reasoning-plus:free',
@@ -60,7 +66,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_PHI_4 === 'true',
     description: 'Modelo gratuito de Microsoft para razonamiento avanzado',
-    maxTokens: 32768
+    contextTokens: 8192,
+    maxTokens: 4000
   },
   {
     id: 'deepseek/deepseek-prover-v2:free',
@@ -69,7 +76,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_DEEPSEEK_PROVER === 'true',
     description: 'Modelo gratuito DeepSeek especializado en pruebas',
-    maxTokens: 65536
+    contextTokens: 128000,
+    maxTokens: 8000
   },
   {
     id: 'nvidia/llama-3.3-nemotron-super-49b-v1:free',
@@ -78,7 +86,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_NEMOTRON_49B === 'true',
     description: 'Modelo gratuito NVIDIA Nemotron de alta capacidad',
-    maxTokens: 131072
+    contextTokens: 32768,
+    maxTokens: 8000
   },
   {
     id: 'deepseek/deepseek-r1-zero:free',
@@ -87,7 +96,8 @@ export const MODELS = [
     isFree: true,
     enabled: process.env.REACT_APP_ENABLE_DEEPSEEK_R1_ZERO === 'true',
     description: 'Modelo gratuito DeepSeek R1 versión Zero',
-    maxTokens: 65536
+    contextTokens: 128000,
+    maxTokens: 8000
   }
 ];
 

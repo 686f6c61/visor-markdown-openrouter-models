@@ -3,7 +3,7 @@ import { Sparkles, Send, Loader2, AlertCircle, Crown, Zap, ExternalLink } from '
 import { getEnabledModels } from '../config/models';
 import './AIPanel.css';
 
-const AIPanel = ({ onImprove, selectedText, isLoading }) => {
+const AIPanel = ({ onImprove, selectedText, isLoading, tokensConsumed }) => {
   const [selectedModel, setSelectedModel] = useState('');
   const [prompt, setPrompt] = useState('');
   const [error, setError] = useState('');
@@ -12,7 +12,13 @@ const AIPanel = ({ onImprove, selectedText, isLoading }) => {
 
   React.useEffect(() => {
     if (enabledModels.length > 0 && !selectedModel) {
-      setSelectedModel(enabledModels[0].id);
+      // Buscar DeepSeek Prover V2 como modelo predeterminado
+      const deepseekV2 = enabledModels.find(model => 
+        model.id === 'deepseek/deepseek-prover-v2:free'
+      );
+      
+      // Si encontramos DeepSeek V2, lo seleccionamos, sino el primero disponible
+      setSelectedModel(deepseekV2 ? deepseekV2.id : enabledModels[0].id);
     }
   }, [enabledModels, selectedModel]);
 
@@ -42,7 +48,8 @@ const AIPanel = ({ onImprove, selectedText, isLoading }) => {
     'Corrige errores gramaticales y de estilo',
     'Añade más detalles y ejemplos',
     'Simplifica el lenguaje para mejor comprensión',
-    'Mejora el formato y organización'
+    'Mejora el formato y organización',
+    'Convierte en formato profesional con tabla de contenidos y secciones bien definidas'
   ];
 
   if (enabledModels.length === 0) {
@@ -62,6 +69,32 @@ const AIPanel = ({ onImprove, selectedText, isLoading }) => {
 
   return (
     <div className="ai-panel">
+      {/* Contador de tokens */}
+      <div className="tokens-counter">
+        <div className="tokens-stats">
+          <div className="tokens-total">
+            <span className="tokens-label">Total:</span>
+            <span className="tokens-value">{tokensConsumed.totalTokens.toLocaleString()}</span>
+          </div>
+          <div className="tokens-breakdown">
+            <span className="tokens-input">
+              ↗ {tokensConsumed.totalInput.toLocaleString()} entrada
+            </span>
+            <span className="tokens-output">
+              ↙ {tokensConsumed.totalOutput.toLocaleString()} salida
+            </span>
+          </div>
+          {tokensConsumed.lastRequest && (
+            <div className="tokens-last">
+              <span className="tokens-last-label">Última:</span>
+              <span className="tokens-last-value">
+                {tokensConsumed.lastRequest.total.toLocaleString()}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="panel-header">
         <Sparkles size={18} />
         <span>IA Vitaminada</span>
@@ -95,14 +128,17 @@ const AIPanel = ({ onImprove, selectedText, isLoading }) => {
                 const model = enabledModels.find(m => m.id === selectedModel);
                 return (
                   <div className="model-details">
-                                         <div className="model-provider">
+                     <div className="model-provider">
                        {model?.isFree ? (
                          <Zap size={14} className="free-icon" />
                        ) : (
                          <Crown size={14} className="premium-icon" />
                        )}
                        <span>{model?.provider}</span>
-                       <span className="model-tokens">• {model?.maxTokens?.toLocaleString()} tokens</span>
+                       <span className="model-tokens">
+                         • {model?.contextTokens?.toLocaleString()} contexto 
+                         • {model?.maxTokens?.toLocaleString()} salida
+                       </span>
                        <a
                          href={`https://openrouter.ai/${model?.id}`}
                          target="_blank"

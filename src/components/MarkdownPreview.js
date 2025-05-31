@@ -1,12 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Eye, FileText } from 'lucide-react';
+import { Eye, FileText, Download, Copy, Check } from 'lucide-react';
 import './MarkdownPreview.css';
 
 const MarkdownPreview = ({ markdown }) => {
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleDownload = () => {
+    if (!markdown) return;
+    
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `documento-${new Date().toISOString().split('T')[0]}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = async () => {
+    if (!markdown) return;
+    
+    try {
+      await navigator.clipboard.writeText(markdown);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error('Error al copiar:', err);
+    }
+  };
+
   const components = {
     code({ node, inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || '');
@@ -54,6 +82,28 @@ const MarkdownPreview = ({ markdown }) => {
           <Eye size={18} />
           <span>Vista Previa</span>
         </div>
+        
+        {markdown && (
+          <div className="preview-actions">
+            <button
+              onClick={handleCopy}
+              className={`action-button copy-button ${copySuccess ? 'success' : ''}`}
+              title="Copiar markdown"
+            >
+              {copySuccess ? <Check size={16} /> : <Copy size={16} />}
+              <span>{copySuccess ? 'Copiado' : 'Copiar'}</span>
+            </button>
+            
+            <button
+              onClick={handleDownload}
+              className="action-button download-button"
+              title="Descargar archivo .md"
+            >
+              <Download size={16} />
+              <span>Descargar</span>
+            </button>
+          </div>
+        )}
       </div>
       
       <div className="preview-content">
