@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
 import Header from './components/Header';
 import MarkdownEditor from './components/MarkdownEditor';
 import MarkdownPreview from './components/MarkdownPreview';
@@ -14,6 +15,7 @@ function App() {
   const [selectedText, setSelectedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showAIPanel, setShowAIPanel] = useState(false);
 
   // Precargar README al iniciar la aplicación
   useEffect(() => {
@@ -119,6 +121,10 @@ function App() {
     setShowWelcomeModal(true);
   };
 
+  const toggleAIPanel = () => {
+    setShowAIPanel(!showAIPanel);
+  };
+
   return (
     <div className="app">
       <Header onShowHelp={handleShowHelp} />
@@ -137,7 +143,7 @@ function App() {
             <MarkdownPreview markdown={markdown} />
           </div>
           
-          <div className="ai-section">
+          <div className={`ai-section ${showAIPanel ? 'mobile-visible' : ''}`}>
             <AIPanel
               onImprove={handleImprove}
               selectedText={selectedText}
@@ -145,6 +151,16 @@ function App() {
             />
           </div>
         </div>
+        
+        {/* Botón flotante para móviles */}
+        <button 
+          className="mobile-ai-toggle"
+          onClick={toggleAIPanel}
+          title={showAIPanel ? 'Ocultar IA' : 'Mostrar IA'}
+        >
+          <Sparkles size={20} />
+          {selectedText && <span className="selection-dot"></span>}
+        </button>
       </main>
       
       <Footer />
