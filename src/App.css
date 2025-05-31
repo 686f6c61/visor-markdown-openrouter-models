@@ -110,11 +110,6 @@
     visibility: visible;
   }
   
-  .mobile-ai-toggle {
-    display: flex;
-    z-index: 1001;
-  }
-  
   .mobile-overlay {
     display: block;
     position: fixed;
@@ -185,6 +180,14 @@
   transition: all 0.3s ease;
   align-items: center;
   justify-content: center;
+}
+
+/* Show button on mobile and tablet screens */
+@media (max-width: 1200px) {
+  .mobile-ai-toggle {
+    display: flex !important;
+    z-index: 1001;
+  }
 }
 
 .mobile-ai-toggle:hover {
