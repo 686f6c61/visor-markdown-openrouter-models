@@ -3,9 +3,9 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: 
+Sitemap: https://markdown-preview-ia.netlify.app/sitemap.xml
 
-# Crawl-delay
+# Crawl-delay for respectful crawling
 Crawl-delay: 1
 
 # Specific rules for search engines

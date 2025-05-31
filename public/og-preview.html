@@ -1,74 +1,86 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor Markdown Vitaminado - Preview</title>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="🚀 Visor Markdown Vitaminado ⚡">
+    <meta property="og:description" content="Editor de Markdown con IA integrada. 10 modelos gratuitos, vista previa en tiempo real y mejoras automáticas de contenido.">
+    <meta property="og:image" content="https://markdown-preview-ia.netlify.app/og-image.png">
+    <meta property="og:url" content="https://markdown-preview-ia.netlify.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Visor Markdown Vitaminado">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🚀 Visor Markdown Vitaminado ⚡">
+    <meta name="twitter:description" content="Editor de Markdown con IA integrada. 10 modelos gratuitos, vista previa en tiempo real y mejoras automáticas de contenido.">
+    <meta name="twitter:image" content="https://markdown-preview-ia.netlify.app/og-image.png">
+    <meta name="twitter:url" content="https://markdown-preview-ia.netlify.app/">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="description" content="Editor de Markdown con IA integrada. 10 modelos gratuitos, vista previa en tiempo real y mejoras automáticas de contenido.">
+    <meta name="keywords" content="markdown, editor, IA, inteligencia artificial, OpenRouter, React, preview">
+    <meta name="author" content="Visor Markdown Vitaminado">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://markdown-preview-ia.netlify.app/">
+    
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .preview-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
         .og-image {
-            width: 1200px;
-            height: 630px;
-            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 315px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .card {
-            width: 1000px;
-            height: 430px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
-            border-radius: 20px;
-            border: 2px solid rgba(255,255,255,0.3);
-            padding: 50px;
-            box-sizing: border-box;
-            position: relative;
-        }
-        .rocket { font-size: 80px; position: absolute; left: 50px; top: 120px; }
-        .title { font-size: 48px; font-weight: bold; color: #1f2937; margin-left: 180px; margin-top: 100px; }
-        .title-accent { color: #8b5cf6; }
-        .subtitle { font-size: 24px; color: #6b7280; margin-left: 180px; margin-top: 10px; }
-        .features { display: flex; margin-top: 40px; }
-        .features-left, .features-right { flex: 1; }
-        .feature { font-size: 20px; color: #374151; margin: 10px 0; }
-        .ai-badge {
-            position: absolute;
-            right: 50px;
-            top: 220px;
-            background: #10b981;
             color: white;
-            padding: 20px 40px;
-            border-radius: 40px;
+            font-size: 24px;
+            font-weight: bold;
             text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
         }
-        .badge-top { font-size: 16px; font-weight: bold; }
-        .badge-bottom { font-size: 24px; font-weight: bold; margin-top: 5px; }
-        .footer { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.9); font-size: 18px; }
     </style>
 </head>
 <body>
-    <div class="og-image">
-        <div class="card">
-            <div class="rocket">🚀</div>
-            <div class="title">Visor Markdown <span class="title-accent">Vitaminado</span></div>
-            <div class="subtitle">Editor con IA Integrada</div>
-            <div class="features">
-                <div class="features-left">
-                    <div class="feature">✨ 10 Modelos de IA Gratuitos</div>
-                    <div class="feature">📝 Editor en Tiempo Real</div>
-                    <div class="feature">🎯 Mejora Selectiva de Texto</div>
-                </div>
-                <div class="features-right">
-                    <div class="feature">👁️ Vista Previa Instantánea</div>
-                    <div class="feature">🔄 Historial de Cambios</div>
-                    <div class="feature">📋 Copiar y Pegar Avanzado</div>
-                </div>
-            </div>
-            <div class="ai-badge">
-                <div class="badge-top">POWERED BY</div>
-                <div class="badge-bottom">OpenRouter AI</div>
-            </div>
+    <h1>🚀 Visor Markdown Vitaminado ⚡</h1>
+    
+    <div class="preview-card">
+        <h2>Vista Previa de Open Graph</h2>
+        <p><strong>Título:</strong> 🚀 Visor Markdown Vitaminado ⚡</p>
+        <p><strong>Descripción:</strong> Editor de Markdown con IA integrada. 10 modelos gratuitos, vista previa en tiempo real y mejoras automáticas de contenido.</p>
+        <p><strong>URL:</strong> https://markdown-preview-ia.netlify.app/</p>
+        
+        <div class="og-image">
+            🚀 Visor Markdown<br>Vitaminado ⚡
         </div>
-        <div class="footer">Hecho con ❤️ por 686f6c61</div>
     </div>
+    
+    <div class="preview-card">
+        <h2>Información del Sitio</h2>
+        <p>Este archivo muestra cómo se verá el sitio cuando se comparta en redes sociales como Facebook, Twitter, LinkedIn, etc.</p>
+        <p>Las meta tags de Open Graph y Twitter Card están configuradas para mostrar la información correcta.</p>
+    </div>
+    
+    <p><a href="https://markdown-preview-ia.netlify.app/">← Volver al Editor</a></p>
 </body>
 </html>

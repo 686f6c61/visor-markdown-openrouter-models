@@ -61,41 +61,31 @@ class OpenRouterService {
     console.log('Longitud del texto a mejorar:', textToImprove.length, 'caracteres');
 
     const systemPrompt = isPartialImprovement 
-      ? `Eres un experto editor de contenido. Tu trabajo es mejorar ÚNICAMENTE el texto seleccionado.
+      ? `INSTRUCCIONES CRÍTICAS - CUMPLE EXACTAMENTE:
+1. Devuelve ÚNICAMENTE el texto mejorado
+2. NO escribas explicaciones, introducciones o comentarios
+3. NO muestres tu proceso de pensamiento
+4. NO uses frases como "Aquí tienes", "He mejorado", "User asks", "I need to", "Let me", "I'll"
+5. Mantén el formato markdown original
+6. Responde SOLO con el contenido mejorado
 
-INSTRUCCIONES CRÍTICAS:
-- Devuelve SOLO el texto mejorado, sin explicaciones
-- NO muestres tu proceso de pensamiento
-- NO uses frases como "Aquí tienes", "He mejorado", "A continuación"
-- Mantén el formato markdown original
-- Conserva el tono y estilo del autor
-- Haz mejoras sutiles pero efectivas
+TEXTO A MEJORAR:`
+      : `INSTRUCCIONES CRÍTICAS - CUMPLE EXACTAMENTE:
+1. Devuelve ÚNICAMENTE el documento markdown mejorado
+2. NO escribas explicaciones, introducciones o comentarios
+3. NO muestres tu proceso de pensamiento
+4. NO uses frases como "Aquí tienes", "He mejorado", "User asks", "I need to", "Let me", "I'll"
+5. Mantén la estructura markdown original
+6. Responde SOLO con el markdown mejorado
 
-Responde únicamente con el texto mejorado.`
-      : `Eres un experto editor de contenido. Tu trabajo es mejorar el documento markdown completo.
-
-INSTRUCCIONES CRÍTICAS:
-- Devuelve SOLO el markdown mejorado, sin explicaciones
-- NO muestres tu proceso de pensamiento
-- NO uses frases como "Aquí tienes", "He mejorado", "A continuación"
-- Mantén la estructura y formato markdown original
-- Conserva el tono y estilo del autor
-- Mejora claridad, coherencia y legibilidad
-
-Responde únicamente con el markdown mejorado.`;
+DOCUMENTO A MEJORAR:`;
 
     const userPrompt = prompt 
       ? `${prompt}
 
-TEXTO A MEJORAR:
 ${textToImprove}`
-      : `Mejora este ${isPartialImprovement ? 'texto seleccionado' : 'documento markdown'} siguiendo estas pautas:
-- Corrige errores gramaticales y ortográficos
-- Mejora la claridad y fluidez
-- Optimiza la estructura y organización
-- Mantén el tono original del autor
+      : `Mejora este ${isPartialImprovement ? 'texto' : 'documento'}:
 
-TEXTO A MEJORAR:
 ${textToImprove}`;
 
     // Calcular tokens de salida seguros
@@ -121,11 +111,11 @@ ${textToImprove}`;
               content: userPrompt
             }
           ],
-          temperature: 0.3,
+          temperature: 0.1,
           max_tokens: safeMaxTokens,
-          top_p: 0.9,
-          frequency_penalty: 0.1,
-          presence_penalty: 0.1,
+          top_p: 0.8,
+          frequency_penalty: 0.2,
+          presence_penalty: 0.2,
           stream: false
         },
         {
@@ -264,45 +254,60 @@ ${textToImprove}`;
     const introPatterns = [
       /^(Aquí tienes|He mejorado|A continuación|Aquí está|Te presento|Esta es|Versión mejorada|Texto mejorado|Contenido mejorado)[:\s]*/i,
       /^(Here's|Here is|This is|Improved version|Enhanced text)[:\s]*/i,
-      /^User asks:.*?meaning.*?\./i,
-      /^.*?I need to.*?\./i,
-      /^.*?Let me.*?\./i,
-      /^.*?I'll.*?\./i,
-      /^.*?I can.*?\./i
+      /^User asks:.*$/im,
+      /^We are asked:.*$/im,
+      /^.*?I need to.*?$/im,
+      /^.*?Let me.*?$/im,
+      /^.*?I'll.*?$/im,
+      /^.*?I can.*?$/im,
+      /^.*?meaning.*?in Spanish.*?$/im,
+      /^.*?which means.*?$/im,
+      /^.*?So we need to.*?$/im,
+      /^.*?The user says.*?$/im,
+      /^.*?I need to produce.*?$/im,
+      /^.*?We need to.*?$/im
     ];
 
     let cleanedText = text.trim();
     
-    // Aplicar patrones de limpieza
-    for (const pattern of introPatterns) {
-      cleanedText = cleanedText.replace(pattern, '').trim();
+    // Aplicar patrones de limpieza línea por línea
+    const lines = cleanedText.split('\n');
+    let startIndex = 0;
+    
+    // Encontrar donde empieza el contenido real (saltar explicaciones iniciales)
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line.length === 0) continue;
+      
+      let isIntroLine = false;
+      for (const pattern of introPatterns) {
+        if (pattern.test(line)) {
+          isIntroLine = true;
+          break;
+        }
+      }
+      
+      if (!isIntroLine && (line.startsWith('#') || line.length > 10)) {
+        startIndex = i;
+        break;
+      }
     }
+    
+    // Tomar solo las líneas del contenido real
+    cleanedText = lines.slice(startIndex).join('\n').trim();
 
     // Si el texto empieza con comillas, removerlas
     if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
       cleanedText = cleanedText.slice(1, -1).trim();
     }
 
-    // Si el texto empieza con explicaciones largas, intentar extraer solo el contenido
-    const lines = cleanedText.split('\n');
-    if (lines.length > 1) {
-      // Buscar donde empieza el contenido real (primera línea que parece markdown o contenido)
-      let contentStartIndex = 0;
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line.startsWith('#') || line.startsWith('*') || line.startsWith('-') || 
-            line.startsWith('1.') || line.length > 50 || line.includes('```')) {
-          contentStartIndex = i;
-          break;
-        }
-      }
-      
-      if (contentStartIndex > 0) {
-        cleanedText = lines.slice(contentStartIndex).join('\n').trim();
-      }
+    // Si el texto empieza con markdown code block, removerlo
+    if (cleanedText.startsWith('```') && cleanedText.endsWith('```')) {
+      const lines = cleanedText.split('\n');
+      cleanedText = lines.slice(1, -1).join('\n').trim();
     }
 
-    return cleanedText;
+    return cleanedText || text.trim();
   }
 }
 

@@ -6,7 +6,7 @@
   
   <!-- Homepage -->
   <url>
-    <loc>https://visor-markdown-vitaminado.vercel.app/</loc>
+    <loc>https://markdown-preview-ia.netlify.app/</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -14,7 +14,7 @@
   
   <!-- README Documentation -->
   <url>
-    <loc>https://visor-markdown-vitaminado.vercel.app/README.md</loc>
+    <loc>https://markdown-preview-ia.netlify.app/README.md</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -22,7 +22,7 @@
   
   <!-- Manifest -->
   <url>
-    <loc>https://visor-markdown-vitaminado.vercel.app/manifest.json</loc>
+    <loc>https://markdown-preview-ia.netlify.app/manifest.json</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
