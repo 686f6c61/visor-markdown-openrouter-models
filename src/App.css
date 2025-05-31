@@ -1,0 +1,137 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 350px;
+  gap: 1.5rem;
+  height: calc(100vh - 200px);
+  min-height: 600px;
+}
+
+.editor-section,
+.preview-section,
+.ai-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.editor-section {
+  grid-column: 1;
+}
+
+.preview-section {
+  grid-column: 2;
+}
+
+.ai-section {
+  grid-column: 3;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .content-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  
+  .editor-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  .preview-section {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  
+  .ai-section {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .content-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1rem;
+    height: auto;
+    min-height: auto;
+  }
+  
+  .editor-section {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 300px;
+  }
+  
+  .preview-section {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 300px;
+  }
+  
+  .ai-section {
+    grid-column: 1;
+    grid-row: 3;
+    max-height: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 0.75rem;
+  }
+  
+  .content-grid {
+    gap: 0.75rem;
+  }
+  
+  .editor-section,
+  .preview-section {
+    min-height: 250px;
+  }
+}
+
+/* Loading state */
+.app.loading {
+  cursor: wait;
+}
+
+.app.loading * {
+  pointer-events: none;
+}
+
+/* Smooth transitions */
+.editor-section,
+.preview-section,
+.ai-section {
+  transition: all 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.content-grid:focus-within .editor-section,
+.content-grid:focus-within .preview-section,
+.content-grid:focus-within .ai-section {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+} 
