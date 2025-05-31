@@ -61,24 +61,36 @@ class OpenRouterService {
     console.log('Longitud del texto a mejorar:', textToImprove.length, 'caracteres');
 
     const systemPrompt = isPartialImprovement 
-      ? `INSTRUCCIONES CRÍTICAS - CUMPLE EXACTAMENTE:
-1. Devuelve ÚNICAMENTE el texto mejorado
-2. NO escribas explicaciones, introducciones o comentarios
-3. NO muestres tu proceso de pensamiento
-4. NO uses frases como "Aquí tienes", "He mejorado", "User asks", "I need to", "Let me", "I'll"
-5. Mantén el formato markdown original
-6. Responde SOLO con el contenido mejorado
+      ? `RESPONDE SOLO CON EL TEXTO MEJORADO. NO AGREGUES EXPLICACIONES.
 
-TEXTO A MEJORAR:`
-      : `INSTRUCCIONES CRÍTICAS - CUMPLE EXACTAMENTE:
-1. Devuelve ÚNICAMENTE el documento markdown mejorado
-2. NO escribas explicaciones, introducciones o comentarios
-3. NO muestres tu proceso de pensamiento
-4. NO uses frases como "Aquí tienes", "He mejorado", "User asks", "I need to", "Let me", "I'll"
-5. Mantén la estructura markdown original
-6. Responde SOLO con el markdown mejorado
+PROHIBIDO:
+- Explicaciones
+- Introducciones  
+- Comentarios
+- Frases como "Aquí tienes", "He mejorado", "User asks"
+- Mostrar tu proceso de pensamiento
 
-DOCUMENTO A MEJORAR:`;
+OBLIGATORIO:
+- Solo el texto mejorado
+- Mantener formato markdown
+- Respuesta directa
+
+TEXTO:`
+      : `RESPONDE SOLO CON EL DOCUMENTO MEJORADO. NO AGREGUES EXPLICACIONES.
+
+PROHIBIDO:
+- Explicaciones
+- Introducciones
+- Comentarios  
+- Frases como "Aquí tienes", "He mejorado", "User asks"
+- Mostrar tu proceso de pensamiento
+
+OBLIGATORIO:
+- Solo el markdown mejorado
+- Mantener estructura original
+- Respuesta directa
+
+DOCUMENTO:`;
 
     const userPrompt = prompt 
       ? `${prompt}
@@ -111,11 +123,12 @@ ${textToImprove}`;
               content: userPrompt
             }
           ],
-          temperature: 0.1,
+          temperature: 0.05,
           max_tokens: safeMaxTokens,
-          top_p: 0.8,
-          frequency_penalty: 0.2,
-          presence_penalty: 0.2,
+          top_p: 0.7,
+          frequency_penalty: 0.3,
+          presence_penalty: 0.3,
+          stop: ["Aquí tienes", "He mejorado", "User asks", "We are asked", "I need to", "Let me", "I'll", "I can", "The user", "Looking at"],
           stream: false
         },
         {
@@ -250,64 +263,174 @@ ${textToImprove}`;
 
   // Función para limpiar respuestas verbosas
   cleanResponse(text) {
-    // Remover frases introductorias comunes
-    const introPatterns = [
-      /^(Aquí tienes|He mejorado|A continuación|Aquí está|Te presento|Esta es|Versión mejorada|Texto mejorado|Contenido mejorado)[:\s]*/i,
-      /^(Here's|Here is|This is|Improved version|Enhanced text)[:\s]*/i,
-      /^User asks:.*$/im,
-      /^We are asked:.*$/im,
-      /^.*?I need to.*?$/im,
-      /^.*?Let me.*?$/im,
-      /^.*?I'll.*?$/im,
-      /^.*?I can.*?$/im,
-      /^.*?meaning.*?in Spanish.*?$/im,
-      /^.*?which means.*?$/im,
-      /^.*?So we need to.*?$/im,
-      /^.*?The user says.*?$/im,
-      /^.*?I need to produce.*?$/im,
-      /^.*?We need to.*?$/im
-    ];
-
     let cleanedText = text.trim();
     
-    // Aplicar patrones de limpieza línea por línea
+    // Patrones para detectar líneas de explicación que deben eliminarse
+    const unwantedPatterns = [
+      /^(Aquí tienes|He mejorado|A continuación|Aquí está|Te presento|Esta es|Versión mejorada|Texto mejorado|Contenido mejorado)/i,
+      /^(Here's|Here is|This is|Improved version|Enhanced text)/i,
+      /^User asks:/i,
+      /^We are asked:/i,
+      /^.*?I need to.*$/i,
+      /^.*?Let me.*$/i,
+      /^.*?I'll.*$/i,
+      /^.*?I can.*$/i,
+      /^.*?meaning.*?in Spanish.*$/i,
+      /^.*?which means.*$/i,
+      /^.*?So we need to.*$/i,
+      /^.*?The user says.*$/i,
+      /^.*?I need to produce.*$/i,
+      /^.*?We need to.*$/i,
+      /^.*?Let's.*$/i,
+      /^.*?I should.*$/i,
+      /^.*?I will.*$/i,
+      /^.*?The text.*$/i,
+      /^.*?This text.*$/i,
+      /^.*?The original.*$/i,
+      /^.*?The improved.*$/i,
+      /^.*?Following.*$/i,
+      /^.*?Based on.*$/i,
+      /^.*?According to.*$/i,
+      /^.*?As requested.*$/i,
+      /^.*?To improve.*$/i,
+      /^.*?In order to.*$/i,
+      /^.*?For better.*$/i,
+      /^.*?To make.*$/i,
+      /^.*?The goal.*$/i,
+      /^.*?My task.*$/i,
+      /^.*?The task.*$/i,
+      /^.*?I've.*$/i,
+      /^.*?I have.*$/i,
+      /^.*?Looking at.*$/i,
+      /^.*?Analyzing.*$/i,
+      /^.*?Reviewing.*$/i,
+      /^.*?Examining.*$/i,
+      /^.*?Considering.*$/i,
+      /^.*?Taking into account.*$/i,
+      /^.*?Given that.*$/i,
+      /^.*?Since.*$/i,
+      /^.*?Because.*$/i,
+      /^.*?Therefore.*$/i,
+      /^.*?Thus.*$/i,
+      /^.*?Hence.*$/i,
+      /^.*?Consequently.*$/i,
+      /^.*?As a result.*$/i,
+      /^.*?In conclusion.*$/i,
+      /^.*?To summarize.*$/i,
+      /^.*?In summary.*$/i,
+      /^.*?Overall.*$/i,
+      /^.*?Finally.*$/i,
+      /^.*?Lastly.*$/i,
+      /^.*?Additionally.*$/i,
+      /^.*?Furthermore.*$/i,
+      /^.*?Moreover.*$/i,
+      /^.*?Also.*$/i,
+      /^.*?Plus.*$/i,
+      /^.*?And.*$/i,
+      /^.*?But.*$/i,
+      /^.*?However.*$/i,
+      /^.*?Nevertheless.*$/i,
+      /^.*?Nonetheless.*$/i,
+      /^.*?On the other hand.*$/i,
+      /^.*?In contrast.*$/i,
+      /^.*?Conversely.*$/i,
+      /^.*?Instead.*$/i,
+      /^.*?Rather.*$/i,
+      /^.*?Alternatively.*$/i,
+      /^.*?Otherwise.*$/i,
+      /^.*?Meanwhile.*$/i,
+      /^.*?At the same time.*$/i,
+      /^.*?Simultaneously.*$/i,
+      /^.*?Concurrently.*$/i,
+      /^.*?In the meantime.*$/i,
+      /^.*?During.*$/i,
+      /^.*?While.*$/i,
+      /^.*?Whereas.*$/i,
+      /^.*?Although.*$/i,
+      /^.*?Though.*$/i,
+      /^.*?Even though.*$/i,
+      /^.*?Despite.*$/i,
+      /^.*?In spite of.*$/i,
+      /^.*?Regardless.*$/i,
+      /^.*?Irrespective.*$/i,
+      /^.*?Notwithstanding.*$/i
+    ];
+
+    // Dividir en líneas y procesar
     const lines = cleanedText.split('\n');
-    let startIndex = 0;
+    const cleanLines = [];
+    let foundContent = false;
     
-    // Encontrar donde empieza el contenido real (saltar explicaciones iniciales)
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      if (line.length === 0) continue;
       
-      let isIntroLine = false;
-      for (const pattern of introPatterns) {
+      // Saltar líneas vacías al inicio
+      if (!foundContent && line.length === 0) continue;
+      
+      // Verificar si la línea es una explicación no deseada
+      let isUnwantedLine = false;
+      for (const pattern of unwantedPatterns) {
         if (pattern.test(line)) {
-          isIntroLine = true;
+          isUnwantedLine = true;
           break;
         }
       }
       
-      if (!isIntroLine && (line.startsWith('#') || line.length > 10)) {
-        startIndex = i;
-        break;
+      // Si es una línea no deseada, saltarla
+      if (isUnwantedLine) continue;
+      
+      // Si la línea parece ser contenido markdown válido, empezar a incluir
+      if (!foundContent && (
+        line.startsWith('#') ||           // Encabezados
+        line.startsWith('*') ||           // Listas
+        line.startsWith('-') ||           // Listas
+        line.startsWith('1.') ||          // Listas numeradas
+        line.startsWith('```') ||         // Bloques de código
+        line.startsWith('|') ||           // Tablas
+        line.startsWith('>') ||           // Citas
+        line.includes('**') ||            // Texto en negrita
+        line.includes('*') ||             // Texto en cursiva
+        line.includes('[') ||             // Enlaces
+        line.length > 20                  // Párrafos largos
+      )) {
+        foundContent = true;
+      }
+      
+      // Si ya encontramos contenido, incluir la línea
+      if (foundContent) {
+        cleanLines.push(lines[i]); // Mantener espacios originales
       }
     }
     
-    // Tomar solo las líneas del contenido real
-    cleanedText = lines.slice(startIndex).join('\n').trim();
-
-    // Si el texto empieza con comillas, removerlas
+    cleanedText = cleanLines.join('\n').trim();
+    
+    // Remover comillas que envuelven todo el contenido
     if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
       cleanedText = cleanedText.slice(1, -1).trim();
     }
-
-    // Si el texto empieza con markdown code block, removerlo
+    
+    // Remover bloques de código que envuelven todo el contenido
     if (cleanedText.startsWith('```') && cleanedText.endsWith('```')) {
       const lines = cleanedText.split('\n');
-      cleanedText = lines.slice(1, -1).join('\n').trim();
+      if (lines.length > 2) {
+        cleanedText = lines.slice(1, -1).join('\n').trim();
+      }
     }
-
-    return cleanedText || text.trim();
+    
+    // Remover bloques de código con especificación de lenguaje
+    if (cleanedText.startsWith('```markdown') && cleanedText.endsWith('```')) {
+      const lines = cleanedText.split('\n');
+      if (lines.length > 2) {
+        cleanedText = lines.slice(1, -1).join('\n').trim();
+      }
+    }
+    
+    // Si después de toda la limpieza no queda nada válido, devolver el texto original
+    if (!cleanedText || cleanedText.length < 10) {
+      return text.trim();
+    }
+    
+    return cleanedText;
   }
 }
 
