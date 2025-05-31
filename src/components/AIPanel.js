@@ -44,12 +44,12 @@ const AIPanel = ({ onImprove, selectedText, isLoading, tokensConsumed }) => {
   };
 
   const quickPrompts = [
-    'Mejora la claridad y estructura del texto',
-    'Corrige errores gramaticales y de estilo',
-    'Añade más detalles y ejemplos',
-    'Simplifica el lenguaje para mejor comprensión',
-    'Mejora el formato y organización',
-    'Convierte en formato profesional con tabla de contenidos y secciones bien definidas'
+    'Corrige errores gramaticales y mejora la fluidez del texto',
+    'Simplifica el lenguaje manteniendo el significado original',
+    'Mejora la estructura y organización del contenido',
+    'Añade ejemplos concretos y detalles relevantes',
+    'Optimiza para mayor claridad y comprensión',
+    'Convierte en formato profesional con mejor estructura'
   ];
 
   if (enabledModels.length === 0) {
