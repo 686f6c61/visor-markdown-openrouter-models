@@ -436,32 +436,6 @@ copies or substantial portions of the Software.
 
 ---
 
-## 👨‍💻 Autor
-
-<div align="center">
-
-### **[686f6c61](https://github.com/686f6c61)**
-
-[![GitHub](https://img.shields.io/badge/GitHub-686f6c61-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/686f6c61)
-[![Email](https://img.shields.io/badge/Email-Contacto-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact@example.com)
-
-> *"Creando herramientas que hacen la vida más fácil, una línea de código a la vez"*
-
-</div>
-
----
-
-## 🌟 Agradecimientos
-
-- 🤖 **OpenRouter** - Por proporcionar acceso gratuito a modelos de IA
-- ⚛️ **React Team** - Por el increíble framework
-- 🎨 **Lucide** - Por los hermosos iconos
-- 🌍 **Open Source Community** - Por inspirar y compartir
-
----
-
-<div align="center">
-
 ### ⭐ ¡Dale una estrella si te gusta el proyecto! ⭐
 
 [![Stars](https://img.shields.io/github/stars/686f6c61/visor-markdown-openrouter-models?style=social)](https://github.com/686f6c61/visor-markdown-openrouter-models/stargazers)
