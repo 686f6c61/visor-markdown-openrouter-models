@@ -61,34 +61,10 @@ class OpenRouterService {
     console.log('Longitud del texto a mejorar:', textToImprove.length, 'caracteres');
 
     const systemPrompt = isPartialImprovement 
-      ? `RESPONDE SOLO CON EL TEXTO MEJORADO. NO AGREGUES EXPLICACIONES.
-
-PROHIBIDO:
-- Explicaciones
-- Introducciones  
-- Comentarios
-- Frases como "Aquí tienes", "He mejorado", "User asks"
-- Mostrar tu proceso de pensamiento
-
-OBLIGATORIO:
-- Solo el texto mejorado
-- Mantener formato markdown
-- Respuesta directa
+      ? `Mejora el siguiente texto. Responde únicamente con el texto mejorado, sin explicaciones.
 
 TEXTO:`
-      : `RESPONDE SOLO CON EL DOCUMENTO MEJORADO. NO AGREGUES EXPLICACIONES.
-
-PROHIBIDO:
-- Explicaciones
-- Introducciones
-- Comentarios  
-- Frases como "Aquí tienes", "He mejorado", "User asks"
-- Mostrar tu proceso de pensamiento
-
-OBLIGATORIO:
-- Solo el markdown mejorado
-- Mantener estructura original
-- Respuesta directa
+      : `Mejora el siguiente documento markdown. Responde únicamente con el markdown mejorado, sin explicaciones.
 
 DOCUMENTO:`;
 
@@ -123,12 +99,11 @@ ${textToImprove}`;
               content: userPrompt
             }
           ],
-          temperature: 0.05,
+          temperature: 0.2,
           max_tokens: safeMaxTokens,
-          top_p: 0.7,
-          frequency_penalty: 0.3,
-          presence_penalty: 0.3,
-          stop: ["Aquí tienes", "He mejorado", "User asks", "We are asked", "I need to", "Let me", "I'll", "I can", "The user", "Looking at"],
+          top_p: 0.9,
+          frequency_penalty: 0.1,
+          presence_penalty: 0.1,
           stream: false
         },
         {
@@ -150,8 +125,35 @@ ${textToImprove}`;
 
       if (response.data?.choices?.[0]?.message?.content) {
         const rawText = response.data.choices[0].message.content.trim();
+        
+        // Si el contenido está vacío o es muy corto, intentar con el texto original
+        if (!rawText || rawText.length < 5) {
+          console.warn('Respuesta vacía o muy corta del modelo, devolviendo texto original');
+          return {
+            improvedText: textToImprove,
+            tokensUsed: {
+              input: response.data.usage?.prompt_tokens || estimatedInputTokens,
+              output: response.data.usage?.completion_tokens || 0,
+              total: response.data.usage?.total_tokens || estimatedInputTokens
+            }
+          };
+        }
+        
         const improvedText = this.cleanResponse(rawText);
         const outputTokens = this.estimateTokens(improvedText);
+        
+        // Verificar que el texto limpio no esté vacío
+        if (!improvedText || improvedText.length < 5) {
+          console.warn('Texto limpio vacío, devolviendo texto original');
+          return {
+            improvedText: textToImprove,
+            tokensUsed: {
+              input: response.data.usage?.prompt_tokens || estimatedInputTokens,
+              output: response.data.usage?.completion_tokens || outputTokens,
+              total: response.data.usage?.total_tokens || (estimatedInputTokens + outputTokens)
+            }
+          };
+        }
         
         // Retornar tanto el texto mejorado como la información de tokens
         return {
@@ -171,8 +173,22 @@ ${textToImprove}`;
           firstChoice: response.data?.choices?.[0],
           hasMessage: !!response.data?.choices?.[0]?.message,
           hasContent: !!response.data?.choices?.[0]?.message?.content,
+          contentLength: response.data?.choices?.[0]?.message?.content?.length || 0,
           fullResponse: response.data
         });
+        
+        // Verificar si hay contenido vacío específicamente
+        if (response.data?.choices?.[0]?.message?.content === "") {
+          console.warn('El modelo devolvió contenido vacío, usando texto original');
+          return {
+            improvedText: textToImprove,
+            tokensUsed: {
+              input: response.data.usage?.prompt_tokens || estimatedInputTokens,
+              output: response.data.usage?.completion_tokens || 0,
+              total: response.data.usage?.total_tokens || estimatedInputTokens
+            }
+          };
+        }
         
         // Intentar extraer cualquier contenido disponible
         const content = response.data?.choices?.[0]?.message?.content || 
@@ -187,7 +203,7 @@ ${textToImprove}`;
           const outputTokens = this.estimateTokens(improvedText);
           
           return {
-            improvedText,
+            improvedText: improvedText || textToImprove,
             tokensUsed: {
               input: response.data.usage?.prompt_tokens || estimatedInputTokens,
               output: response.data.usage?.completion_tokens || outputTokens,
@@ -196,7 +212,16 @@ ${textToImprove}`;
           };
         }
         
-        throw new Error(`Respuesta inválida del modelo. Estructura recibida: ${JSON.stringify(response.data, null, 2)}`);
+        // Si no hay contenido válido, devolver el texto original
+        console.warn('No se encontró contenido válido, devolviendo texto original');
+        return {
+          improvedText: textToImprove,
+          tokensUsed: {
+            input: response.data.usage?.prompt_tokens || estimatedInputTokens,
+            output: response.data.usage?.completion_tokens || 0,
+            total: response.data.usage?.total_tokens || estimatedInputTokens
+          }
+        };
       }
     } catch (error) {
       console.error('Error calling OpenRouter API:', error);
