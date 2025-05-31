@@ -122,6 +122,7 @@ function App() {
   };
 
   const toggleAIPanel = () => {
+    console.log('Toggle AI Panel clicked, current state:', showAIPanel);
     setShowAIPanel(!showAIPanel);
   };
 
@@ -151,6 +152,14 @@ function App() {
             />
           </div>
         </div>
+        
+        {/* Overlay para cerrar panel en móviles */}
+        {showAIPanel && (
+          <div 
+            className="mobile-overlay"
+            onClick={toggleAIPanel}
+          />
+        )}
         
         {/* Botón flotante para móviles */}
         <button 
