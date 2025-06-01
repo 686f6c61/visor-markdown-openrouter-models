@@ -5,7 +5,7 @@ import './FloatingGitHub.css';
 const FloatingGitHub = () => {
   return (
     <a
-      href="https://github.com/686f6c61/visor-markdown-vitaminado"
+      href="https://github.com/686f6c61/visor-markdown-openrouter-models"
       target="_blank"
       rel="noopener noreferrer"
       className="floating-github"

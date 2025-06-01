@@ -5,7 +5,7 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 class OpenRouterService {
   constructor() {
-    this.apiKey = process.env.REACT_APP_OPENROUTER_API_KEY || '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';
+    this.apiKey = process.env.REACT_APP_OPENROUTER_API_KEY;
     
     console.log('API Key configurada:', this.apiKey ? 'Sí' : 'No');
     console.log('API Key desde env:', process.env.REACT_APP_OPENROUTER_API_KEY ? 'Sí' : 'No');
