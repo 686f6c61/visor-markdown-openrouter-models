@@ -6,6 +6,12 @@
 [![OpenRouter](https://img.shields.io/badge/OpenRouter-IA-8B5CF6?style=flat-square)](https://openrouter.ai/)
 [![MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](LICENSE)
 
+## 📸 Vista de la Aplicación
+
+![Visor Markdown Vitaminado](./public/img/image.png)
+
+*Vista completa de la aplicación mostrando el editor de Markdown, vista previa en tiempo real y panel de IA con 6 modelos disponibles.*
+
 ## 🚀 Características
 
 - **Editor en tiempo real** con vista previa instantánea
