@@ -60,19 +60,24 @@ class OpenRouterService {
 
     console.log('Longitud del texto a mejorar:', textToImprove.length, 'caracteres');
 
-    const systemPrompt = isPartialImprovement 
-      ? `Mejora el siguiente texto. Responde únicamente con el texto mejorado, sin explicaciones.
+    const systemPrompt = `Eres un CTO e Ingeniero de Software Senior experto en documentación técnica y Markdown.
 
-TEXTO:`
-      : `Mejora el siguiente documento markdown. Responde únicamente con el markdown mejorado, sin explicaciones.
+RESTRICCIONES ABSOLUTAS:
+- SOLO devuelve Markdown válido
+- NO incluyas explicaciones, pensamientos, reflexiones o comentarios
+- NO uses bloques de código que envuelvan el resultado
+- NO agregues texto antes o después del Markdown
+- NO uses comillas para envolver el contenido
+- PROHIBIDO cualquier texto que no sea Markdown puro
 
-DOCUMENTO:`;
+Tu respuesta debe ser ÚNICAMENTE el ${isPartialImprovement ? 'texto' : 'documento'} mejorado en formato Markdown.`;
 
     const userPrompt = prompt 
       ? `${prompt}
 
+${isPartialImprovement ? 'TEXTO A MEJORAR:' : 'DOCUMENTO A MEJORAR:'}
 ${textToImprove}`
-      : `Mejora este ${isPartialImprovement ? 'texto' : 'documento'}:
+      : `${isPartialImprovement ? 'Mejora este texto aplicando las mejores prácticas de documentación técnica:' : 'Mejora este documento Markdown aplicando las mejores prácticas de documentación técnica, estructura clara, y formato profesional:'}
 
 ${textToImprove}`;
 
@@ -99,12 +104,27 @@ ${textToImprove}`;
               content: userPrompt
             }
           ],
-          temperature: 0.2,
+          temperature: 0.1,
           max_tokens: safeMaxTokens,
-          top_p: 0.9,
-          frequency_penalty: 0.1,
-          presence_penalty: 0.1,
-          stream: false
+          top_p: 0.8,
+          frequency_penalty: 0.3,
+          presence_penalty: 0.2,
+          stream: false,
+          stop: [
+            "\n\nExplicación:",
+            "\n\nNota:",
+            "\n\nObservación:",
+            "\n\nComo CTO",
+            "\n\nHe aplicado",
+            "\n\nLos cambios",
+            "\n\nLas mejoras",
+            "\n\nNote:",
+            "\n\nExplanation:",
+            "\n\nAs a CTO",
+            "\n\nI have applied",
+            "\n\nThe changes",
+            "\n\nThe improvements"
+          ]
         },
         {
           headers: {
@@ -290,112 +310,66 @@ ${textToImprove}`;
   cleanResponse(text) {
     let cleanedText = text.trim();
     
-    // Patrones para detectar líneas de explicación que deben eliminarse
+    // Remover bloques de código que envuelven todo el contenido PRIMERO
+    if (cleanedText.startsWith('```markdown') && cleanedText.endsWith('```')) {
+      const lines = cleanedText.split('\n');
+      if (lines.length > 2) {
+        cleanedText = lines.slice(1, -1).join('\n').trim();
+      }
+    } else if (cleanedText.startsWith('```') && cleanedText.endsWith('```')) {
+      const lines = cleanedText.split('\n');
+      if (lines.length > 2) {
+        cleanedText = lines.slice(1, -1).join('\n').trim();
+      }
+    }
+    
+    // Remover comillas que envuelven todo el contenido
+    if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
+      cleanedText = cleanedText.slice(1, -1).trim();
+    }
+    
+    // Patrones más agresivos para detectar líneas de explicación que deben eliminarse
     const unwantedPatterns = [
-      /^(Aquí tienes|He mejorado|A continuación|Aquí está|Te presento|Esta es|Versión mejorada|Texto mejorado|Contenido mejorado)/i,
-      /^(Here's|Here is|This is|Improved version|Enhanced text)/i,
-      /^User asks:/i,
-      /^We are asked:/i,
-      /^.*?I need to.*$/i,
-      /^.*?Let me.*$/i,
-      /^.*?I'll.*$/i,
-      /^.*?I can.*$/i,
-      /^.*?meaning.*?in Spanish.*$/i,
-      /^.*?which means.*$/i,
-      /^.*?So we need to.*$/i,
-      /^.*?The user says.*$/i,
-      /^.*?I need to produce.*$/i,
-      /^.*?We need to.*$/i,
-      /^.*?Let's.*$/i,
-      /^.*?I should.*$/i,
-      /^.*?I will.*$/i,
-      /^.*?The text.*$/i,
-      /^.*?This text.*$/i,
-      /^.*?The original.*$/i,
-      /^.*?The improved.*$/i,
-      /^.*?Following.*$/i,
-      /^.*?Based on.*$/i,
-      /^.*?According to.*$/i,
-      /^.*?As requested.*$/i,
-      /^.*?To improve.*$/i,
-      /^.*?In order to.*$/i,
-      /^.*?For better.*$/i,
-      /^.*?To make.*$/i,
-      /^.*?The goal.*$/i,
-      /^.*?My task.*$/i,
-      /^.*?The task.*$/i,
-      /^.*?I've.*$/i,
-      /^.*?I have.*$/i,
-      /^.*?Looking at.*$/i,
-      /^.*?Analyzing.*$/i,
-      /^.*?Reviewing.*$/i,
-      /^.*?Examining.*$/i,
-      /^.*?Considering.*$/i,
-      /^.*?Taking into account.*$/i,
-      /^.*?Given that.*$/i,
-      /^.*?Since.*$/i,
-      /^.*?Because.*$/i,
-      /^.*?Therefore.*$/i,
-      /^.*?Thus.*$/i,
-      /^.*?Hence.*$/i,
-      /^.*?Consequently.*$/i,
-      /^.*?As a result.*$/i,
-      /^.*?In conclusion.*$/i,
-      /^.*?To summarize.*$/i,
-      /^.*?In summary.*$/i,
-      /^.*?Overall.*$/i,
-      /^.*?Finally.*$/i,
-      /^.*?Lastly.*$/i,
-      /^.*?Additionally.*$/i,
-      /^.*?Furthermore.*$/i,
-      /^.*?Moreover.*$/i,
-      /^.*?Also.*$/i,
-      /^.*?Plus.*$/i,
-      /^.*?And.*$/i,
-      /^.*?But.*$/i,
-      /^.*?However.*$/i,
-      /^.*?Nevertheless.*$/i,
-      /^.*?Nonetheless.*$/i,
-      /^.*?On the other hand.*$/i,
-      /^.*?In contrast.*$/i,
-      /^.*?Conversely.*$/i,
-      /^.*?Instead.*$/i,
-      /^.*?Rather.*$/i,
-      /^.*?Alternatively.*$/i,
-      /^.*?Otherwise.*$/i,
-      /^.*?Meanwhile.*$/i,
-      /^.*?At the same time.*$/i,
-      /^.*?Simultaneously.*$/i,
-      /^.*?Concurrently.*$/i,
-      /^.*?In the meantime.*$/i,
-      /^.*?During.*$/i,
-      /^.*?While.*$/i,
-      /^.*?Whereas.*$/i,
-      /^.*?Although.*$/i,
-      /^.*?Though.*$/i,
-      /^.*?Even though.*$/i,
-      /^.*?Despite.*$/i,
-      /^.*?In spite of.*$/i,
-      /^.*?Regardless.*$/i,
-      /^.*?Irrespective.*$/i,
-      /^.*?Notwithstanding.*$/i
+      // Español
+      /^(Aquí tienes|He mejorado|A continuación|Aquí está|Te presento|Esta es|Versión mejorada|Texto mejorado|Contenido mejorado|El resultado es|La mejora es|Como CTO|Como ingeniero|Desde mi experiencia|Mi recomendación|La versión optimizada|El documento mejorado)/i,
+      /^(Basándome en|Considerando|Teniendo en cuenta|Aplicando|Implementando|Optimizando|Mejorando|Reestructurando|Refinando|Puliendo)/i,
+      /^(He aplicado|He implementado|He optimizado|He mejorado|He reestructurado|He refinado|He pulido|Se ha aplicado|Se ha implementado)/i,
+      /^(Los cambios incluyen|Las mejoras son|Los ajustes realizados|Las modificaciones|Las optimizaciones)/i,
+      /^(Con estas mejoras|Estas modificaciones|Estos cambios|Esta optimización|Esta reestructuración)/i,
+      
+      // Inglés
+      /^(Here's|Here is|This is|Improved version|Enhanced text|The result is|The improvement is|As a CTO|As an engineer|From my experience|My recommendation|The optimized version|The improved document)/i,
+      /^(Based on|Considering|Taking into account|Applying|Implementing|Optimizing|Improving|Restructuring|Refining|Polishing)/i,
+      /^(I have applied|I have implemented|I have optimized|I have improved|I have restructured|I have refined|I have polished|Applied|Implemented)/i,
+      /^(The changes include|The improvements are|The adjustments made|The modifications|The optimizations)/i,
+      /^(With these improvements|These modifications|These changes|This optimization|This restructuring)/i,
+      
+      // Patrones generales de explicación
+      /^.*?(I need to|Let me|I'll|I can|I will|I should|We need to|Let's|The user|The text|This text|The original|The improved|Following|Based on|According to|As requested|To improve|In order to|For better|To make|The goal|My task|The task|I've|I have|Looking at|Analyzing|Reviewing|Examining|Considering).*$/i,
+      /^.*?(meaning|which means|So we need to|The user says|I need to produce|Following|Additionally|Furthermore|Moreover|Also|However|Nevertheless|Therefore|Thus|Hence|Consequently|As a result|In conclusion|To summarize|In summary|Overall|Finally).*$/i,
+      
+      // Líneas que contienen solo explicaciones sin contenido markdown
+      /^[^#*\-[\]`|>]*?(explicación|explanation|note|nota|observación|observation|comentario|comment|aclaración|clarification).*$/i,
+      /^[^#*\-[\]`|>]*?(he realizado|I have made|se han aplicado|have been applied|los cambios|the changes|las mejoras|the improvements).*$/i
     ];
 
     // Dividir en líneas y procesar
     const lines = cleanedText.split('\n');
     const cleanLines = [];
-    let foundContent = false;
+    let foundMarkdownContent = false;
+    let skipIntroLines = true;
     
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
+      const line = lines[i];
+      const trimmedLine = line.trim();
       
       // Saltar líneas vacías al inicio
-      if (!foundContent && line.length === 0) continue;
+      if (skipIntroLines && trimmedLine.length === 0) continue;
       
       // Verificar si la línea es una explicación no deseada
       let isUnwantedLine = false;
       for (const pattern of unwantedPatterns) {
-        if (pattern.test(line)) {
+        if (pattern.test(trimmedLine)) {
           isUnwantedLine = true;
           break;
         }
@@ -404,55 +378,64 @@ ${textToImprove}`;
       // Si es una línea no deseada, saltarla
       if (isUnwantedLine) continue;
       
-      // Si la línea parece ser contenido markdown válido, empezar a incluir
-      if (!foundContent && (
-        line.startsWith('#') ||           // Encabezados
-        line.startsWith('*') ||           // Listas
-        line.startsWith('-') ||           // Listas
-        line.startsWith('1.') ||          // Listas numeradas
-        line.startsWith('```') ||         // Bloques de código
-        line.startsWith('|') ||           // Tablas
-        line.startsWith('>') ||           // Citas
-        line.includes('**') ||            // Texto en negrita
-        line.includes('*') ||             // Texto en cursiva
-        line.includes('[') ||             // Enlaces
-        line.length > 20                  // Párrafos largos
-      )) {
-        foundContent = true;
+      // Detectar contenido markdown válido
+      const isMarkdownContent = (
+        trimmedLine.startsWith('#') ||           // Encabezados
+        trimmedLine.startsWith('*') ||           // Listas o énfasis
+        trimmedLine.startsWith('-') ||           // Listas
+        trimmedLine.startsWith('+') ||           // Listas
+        /^\d+\./.test(trimmedLine) ||            // Listas numeradas
+        trimmedLine.startsWith('```') ||         // Bloques de código
+        trimmedLine.startsWith('|') ||           // Tablas
+        trimmedLine.startsWith('>') ||           // Citas
+        trimmedLine.includes('**') ||            // Texto en negrita
+        trimmedLine.includes('__') ||            // Texto en negrita alternativo
+        trimmedLine.includes('[') ||             // Enlaces o referencias
+        trimmedLine.includes('![') ||            // Imágenes
+        trimmedLine.includes('`') ||             // Código inline
+        (trimmedLine.length > 15 && !isUnwantedLine) // Párrafos largos que no son explicaciones
+      );
+      
+      // Si encontramos contenido markdown, empezar a incluir todo
+      if (isMarkdownContent) {
+        foundMarkdownContent = true;
+        skipIntroLines = false;
       }
       
-      // Si ya encontramos contenido, incluir la línea
-      if (foundContent) {
-        cleanLines.push(lines[i]); // Mantener espacios originales
+      // Si ya encontramos contenido markdown o es una línea vacía después del contenido, incluir
+      if (foundMarkdownContent || (!skipIntroLines && trimmedLine.length === 0)) {
+        cleanLines.push(line); // Mantener espacios originales
       }
     }
     
     cleanedText = cleanLines.join('\n').trim();
     
-    // Remover comillas que envuelven todo el contenido
-    if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
-      cleanedText = cleanedText.slice(1, -1).trim();
-    }
-    
-    // Remover bloques de código que envuelven todo el contenido
-    if (cleanedText.startsWith('```') && cleanedText.endsWith('```')) {
-      const lines = cleanedText.split('\n');
-      if (lines.length > 2) {
-        cleanedText = lines.slice(1, -1).join('\n').trim();
-      }
-    }
-    
-    // Remover bloques de código con especificación de lenguaje
-    if (cleanedText.startsWith('```markdown') && cleanedText.endsWith('```')) {
-      const lines = cleanedText.split('\n');
-      if (lines.length > 2) {
-        cleanedText = lines.slice(1, -1).join('\n').trim();
-      }
-    }
-    
-    // Si después de toda la limpieza no queda nada válido, devolver el texto original
+    // Verificación final: si no hay contenido markdown válido, intentar extraer cualquier texto útil
     if (!cleanedText || cleanedText.length < 10) {
-      return text.trim();
+      // Buscar cualquier línea que no sea explicativa
+      const fallbackLines = [];
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        if (trimmedLine.length > 0) {
+          let isExplanation = false;
+          for (const pattern of unwantedPatterns) {
+            if (pattern.test(trimmedLine)) {
+              isExplanation = true;
+              break;
+            }
+          }
+          if (!isExplanation) {
+            fallbackLines.push(line);
+          }
+        }
+      }
+      
+      if (fallbackLines.length > 0) {
+        cleanedText = fallbackLines.join('\n').trim();
+      } else {
+        // Como último recurso, devolver el texto original limpio
+        return text.trim();
+      }
     }
     
     return cleanedText;

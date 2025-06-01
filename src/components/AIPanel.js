@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Send, Loader2, AlertCircle, Crown, Zap, ExternalLink } from 'lucide-react';
+import { Sparkles, Send, Loader2, AlertCircle, Crown, Zap, ExternalLink, Eye, Power } from 'lucide-react';
 import { getEnabledModels } from '../config/models';
 import './AIPanel.css';
 
@@ -7,20 +7,21 @@ const AIPanel = ({ onImprove, selectedText, isLoading, tokensConsumed }) => {
   const [selectedModel, setSelectedModel] = useState('');
   const [prompt, setPrompt] = useState('');
   const [error, setError] = useState('');
+  const [isAIEnabled, setIsAIEnabled] = useState(true);
   
   const enabledModels = getEnabledModels();
 
   React.useEffect(() => {
-    if (enabledModels.length > 0 && !selectedModel) {
-      // Buscar DeepSeek Prover V2 como modelo predeterminado
-      const deepseekV2 = enabledModels.find(model => 
-        model.id === 'deepseek/deepseek-prover-v2:free'
+    if (enabledModels.length > 0 && !selectedModel && isAIEnabled) {
+      // Buscar Gemma 3 4B como modelo predeterminado
+      const gemma3 = enabledModels.find(model => 
+        model.id === 'google/gemma-3-4b-it'
       );
       
-      // Si encontramos DeepSeek V2, lo seleccionamos, sino el primero disponible
-      setSelectedModel(deepseekV2 ? deepseekV2.id : enabledModels[0].id);
+      // Si encontramos Gemma 3, lo seleccionamos, sino el primero disponible
+      setSelectedModel(gemma3 ? gemma3.id : enabledModels[0].id);
     }
-  }, [enabledModels, selectedModel]);
+  }, [enabledModels, selectedModel, isAIEnabled]);
 
   const handleImprove = async () => {
     if (!selectedModel) {
@@ -52,9 +53,59 @@ const AIPanel = ({ onImprove, selectedText, isLoading, tokensConsumed }) => {
     'Convierte en formato profesional con mejor estructura'
   ];
 
+  // Modo visor simple cuando IA está desactivada
+  if (!isAIEnabled) {
+    return (
+      <div className="ai-panel viewer-mode">
+        <div className="ai-toggle-section">
+          <div className="ai-toggle">
+            <label className="toggle-label">
+              <input
+                type="checkbox"
+                checked={isAIEnabled}
+                onChange={(e) => setIsAIEnabled(e.target.checked)}
+                className="toggle-input"
+              />
+              <span className="toggle-slider"></span>
+              <span className="toggle-text">
+                <Power size={16} />
+                IA {isAIEnabled ? 'Activada' : 'Desactivada'}
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div className="viewer-content">
+          <div className="viewer-header">
+            <Eye size={24} />
+            <h3>Modo Markdown Preview</h3>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (enabledModels.length === 0) {
     return (
       <div className="ai-panel">
+        <div className="ai-toggle-section">
+          <div className="ai-toggle">
+            <label className="toggle-label">
+              <input
+                type="checkbox"
+                checked={isAIEnabled}
+                onChange={(e) => setIsAIEnabled(e.target.checked)}
+                className="toggle-input"
+              />
+              <span className="toggle-slider"></span>
+              <span className="toggle-text">
+                <Power size={16} />
+                IA {isAIEnabled ? 'Activada' : 'Desactivada'}
+              </span>
+            </label>
+          </div>
+        </div>
+
         <div className="panel-header">
           <Sparkles size={18} />
           <span>IA Vitaminada</span>
@@ -69,6 +120,25 @@ const AIPanel = ({ onImprove, selectedText, isLoading, tokensConsumed }) => {
 
   return (
     <div className="ai-panel">
+      {/* Toggle de IA */}
+      <div className="ai-toggle-section">
+        <div className="ai-toggle">
+          <label className="toggle-label">
+            <input
+              type="checkbox"
+              checked={isAIEnabled}
+              onChange={(e) => setIsAIEnabled(e.target.checked)}
+              className="toggle-input"
+            />
+            <span className="toggle-slider"></span>
+            <span className="toggle-text">
+              <Power size={16} />
+              IA {isAIEnabled ? 'Activada' : 'Desactivada'}
+            </span>
+          </label>
+        </div>
+      </div>
+
       {/* Contador de tokens */}
       <div className="tokens-counter">
         <div className="tokens-stats">

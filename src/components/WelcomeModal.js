@@ -21,7 +21,7 @@ const WelcomeModal = ({ isOpen, onClose }) => {
           <div className="intro-features">
             <div className="feature-item">
               <CheckCircle size={20} className="feature-check" />
-              <span>10 modelos de IA completamente gratuitos</span>
+              <span>6 modelos de IA de alta calidad</span>
             </div>
             <div className="feature-item">
               <CheckCircle size={20} className="feature-check" />
@@ -65,7 +65,7 @@ const WelcomeModal = ({ isOpen, onClose }) => {
               <div className="step-number">2</div>
               <div className="step-content">
                 <h4>Elige tu modelo de IA</h4>
-                <p>Selecciona entre 10 modelos especializados según tus necesidades</p>
+                <p>Selecciona entre 6 modelos especializados según tus necesidades</p>
               </div>
             </div>
             
@@ -93,7 +93,7 @@ const WelcomeModal = ({ isOpen, onClose }) => {
         <div className="models-showcase">
           <div className="models-header">
             <Brain size={40} className="models-icon" />
-            <h3>10 Modelos Especializados a Tu Disposición</h3>
+            <h3>6 Modelos Especializados a Tu Disposición</h3>
             <p>Cada modelo tiene fortalezas únicas para diferentes tipos de contenido</p>
           </div>
           
@@ -114,12 +114,12 @@ const WelcomeModal = ({ isOpen, onClose }) => {
                 <div className="col-provider">{model.provider}</div>
                 <div className="col-tokens">{model.maxTokens?.toLocaleString()}</div>
                 <div className="col-specialty">
-                  {index === 0 && "Razonamiento avanzado"}
-                  {index === 1 && "Uso general"}
-                  {index === 2 && "Conversación natural"}
-                  {index === 3 && "Instrucciones precisas"}
-                  {index === 4 && "Respuestas rápidas"}
-                  {index === 5 && "Razonamiento profundo"}
+                  {model.id === 'google/gemma-3-4b-it' && "Multimodal y razonamiento"}
+                  {model.id === 'openai/gpt-4o-mini' && "Uso general avanzado"}
+                  {model.id === 'google/gemini-2.0-flash-001' && "Velocidad y multimodal"}
+                  {model.id === 'deepseek/deepseek-chat-v3-0324' && "Tareas complejas"}
+                  {model.id === 'mistralai/mistral-nemo' && "Multilingüe y funciones"}
+                  {model.id === 'meta-llama/llama-4-maverick' && "Visión y contexto largo"}
                 </div>
               </div>
             ))}
@@ -133,7 +133,7 @@ const WelcomeModal = ({ isOpen, onClose }) => {
           
           <div className="models-tip">
             <Zap size={16} className="tip-icon" />
-            <span>Todos los modelos son 100% gratuitos gracias a OpenRouter</span>
+            <span>Todos los modelos están disponibles y optimizados para diferentes tareas</span>
           </div>
         </div>
       )

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Heart, Github, Zap } from 'lucide-react';
+import { Heart, Zap } from 'lucide-react';
 import './Footer.css';
 
 const Footer = () => {
-  const githubUser = process.env.REACT_APP_GITHUB_USER;
   const currentYear = new Date().getFullYear();
 
   return (
@@ -11,20 +10,7 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-left">
           <span className="footer-text">
-            Hecho con <Heart size={14} className="heart-icon" /> por{' '}
-            {githubUser ? (
-              <a 
-                href={`https://github.com/${githubUser}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="github-user-link"
-              >
-                <Github size={14} />
-                {githubUser}
-              </a>
-            ) : (
-              'el equipo de desarrollo'
-            )}
+            Desarrollado con <Heart size={14} className="heart-icon" /> por <strong>686f6c61</strong>
           </span>
           <span className="tech-stack">
             <Zap size={12} className="tech-icon" />

@@ -36,6 +36,11 @@
   color: #6b7280;
 }
 
+.footer-text strong {
+  color: #374151;
+  font-weight: 600;
+}
+
 .heart-icon {
   color: #ef4444;
   animation: heartbeat 2s ease-in-out infinite;
@@ -57,25 +62,6 @@
   70% {
     transform: scale(1);
   }
-}
-
-.github-user-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: #3b82f6;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  margin-left: 0.25rem;
-}
-
-.github-user-link:hover {
-  background: #eff6ff;
-  color: #2563eb;
-  transform: translateY(-1px);
 }
 
 .tech-stack {
@@ -157,11 +143,6 @@
   }
   
   .footer-year {
-    font-size: 0.75rem;
-  }
-  
-  .github-user-link {
-    padding: 0.2rem 0.4rem;
     font-size: 0.75rem;
   }
 } 

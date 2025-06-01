@@ -3,15 +3,9 @@ import { Github } from 'lucide-react';
 import './FloatingGitHub.css';
 
 const FloatingGitHub = () => {
-  const githubRepo = process.env.REACT_APP_GITHUB_REPO;
-
-  if (!githubRepo) {
-    return null;
-  }
-
   return (
     <a
-      href={githubRepo}
+      href="https://github.com/686f6c61/visor-markdown-vitaminado"
       target="_blank"
       rel="noopener noreferrer"
       className="floating-github"
